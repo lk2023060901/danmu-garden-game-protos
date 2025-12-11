@@ -1,0 +1,71 @@
+name: Generate Go protobuf files
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "**.proto"
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - "**.proto"
+
+permissions:
+  contents: write
+
+jobs:
+  generate-go-pb:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Set up protoc
+        uses: arduino/setup-protoc@v3
+        with:
+          version: "27.3"
+
+      - name: Install protoc-gen-go
+        run: |
+          go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.36.10
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+
+      - name: Generate Go .pb.go files
+        run: |
+          set -euo pipefail
+
+          PROTO_FILES=$(find . -name '*.proto' -print)
+          if [ -z "$PROTO_FILES" ]; then
+            echo "No .proto files found, skipping generation."
+            exit 0
+          fi
+
+          for file in $PROTO_FILES; do
+            echo "Generating Go code from $file"
+            protoc \
+              -I . \
+              --go_out=paths=source_relative:. \
+              "$file"
+          done
+
+      - name: Commit and push generated files
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: |
+          if git diff --quiet; then
+            echo "No changes in generated files."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add .
+          git commit -m "chore: auto-generate pb.go [skip ci]"
+          git push
+
