@@ -1,0 +1,182 @@
+syntax = "proto3";
+
+package zeus.game.bed.v1;
+
+option go_package = "github.com/lk2023060901/danmu-garden-game-protos;framework";
+
+import "err_code.proto";
+import "bed_type.proto";
+import "role_type.proto";
+
+// 抢占床位 - 请求
+message OccupyBedSlotRequest {
+  uint64 bed_id = 1;
+  uint32 slot_id = 2;
+}
+
+// 抢占床位 - 回复
+message OccupyBedSlotResponse {
+  zeus.game.error.v1.Error error = 1;
+}
+
+// 抢占床位 - 通知发起者以外的所有人
+message OccupyBedSlotNotify {
+  uint64 target_id = 1;
+  uint64 bed_id = 2;
+  uint32 slot_id = 3;
+  zeus.game.role.v1.BaseRoleInfo base_role = 4;
+}
+
+// 申请床位请求 - 通知床位所有者，有人向你申请加入
+message ApplyBedSlotNotify {
+  zeus.game.role.v1.BaseRoleInfo base_role = 1;
+}
+
+// 同意申请床位 - 请求
+message AgreeApplyBedSlotRequest {
+  uint64 target_id = 1;
+}
+
+// 同意申请床位 - 回复
+message AgreeApplyBedSlotResponse {
+  zeus.game.error.v1.Error error = 1;
+}
+
+// 拒绝申请床位 - 请求
+message RejectApplyBedSlotRequest {
+  uint64 target_id = 1;
+}
+
+// 拒绝申请床位 - 回复
+message RejectApplyBedSlotResponse {
+  zeus.game.error.v1.Error error = 1;
+}
+
+// 封印床位 - 请求
+message SealBedSlotRequest {
+  // 床位 id
+  int32 slot_id = 1;
+}
+
+// 封印床位 - 回应
+message SealBedSlotResponse {
+  zeus.game.error.v1.Error error = 1;
+  int32 slot_id = 2;
+  BedSealState state = 3;
+}
+
+// 封印床位 - 通知
+message SealBedSlotNotify {
+  int32 slot_id = 2;
+  BedSealState state = 3;
+}
+
+// 解封床位 - 请求
+message UnsealBedSlotRequest {
+  // 床位id
+  int32 slot_id = 1;
+}
+
+// 解封床位 - 回应
+message UnsealBedSlotResponse {
+  zeus.game.error.v1.Error error = 1; // 业务错误码（如：床位未被封，不可解封等）
+  int32 slot_id = 2;   // 床位 id
+  BedSealState state = 3; // 解封后的最新状态
+}
+
+// 解封床位 - 通知（广播给房间内所有人）
+message UnsealBedSlotNotify {
+  int32 slot_id = 1;   // 床位 id
+  BedSealState state = 2; // 最新状态（通常 is_sealed = false）
+}
+
+// 踢出床位上的角色 - 请求
+message KickBedSlotRequest {
+  uint32 slot_id = 1;   // 被踢的床位 ID
+  uint64 target_id = 2; // 操作目标用户 ID（可选：若踢全员，可忽略）
+}
+
+// 踢出床位上的角色 - 回复
+message KickBedSlotResponse {
+  zeus.game.error.v1.Error error = 1; // 错误码（如：床位无人、保护不足、不够能量等）
+  uint32 slot_id = 2; // 床位 ID
+
+  // 护盾最大值和当前值
+  int64 max_value = 3;
+  int64 cur_value = 4;
+  repeated zeus.game.role.v1.BaseRoleInfo roles = 5; // 被踢下的所有角色信息
+}
+
+// 踢出床位上的角色 - 通知所有人（除了发起者）
+message KickBedSlotNotify {
+  uint32 slot_id = 1; // 被踢的床位 ID
+
+  // 护盾最大值和当前值
+  int64 max_value = 2;
+  int64 cur_value = 3;
+  repeated zeus.game.role.v1.BaseRoleInfo roles = 4; // 被踢下的所有角色信息
+}
+
+// 增加床位护盾 - 请求
+message AddBedSlotShieldRequest {
+  uint32 slot_id = 1; // 床位 ID
+}
+
+// 增加床位护盾 - 回复
+message AddBedSlotShieldResponse {
+  zeus.game.error.v1.Error error = 1; // 错误码
+  uint32 slot_id = 2; // 床位 ID
+
+  // 增加后的护盾最大值与当前值
+  int64 max_value = 3;
+  int64 cur_value = 4;
+}
+
+// 增加床位护盾 - 通知所有人
+message AddBedSlotShieldNotify {
+  uint32 slot_id = 1; // 床位 ID
+
+  // 增加后的护盾最大值与当前值
+  int64 max_value = 2;
+  int64 cur_value = 3;
+}
+
+// 下发床位信息列表 - 进入直播间时下发
+message BedInfoListSync {
+  repeated BedInfo bed_list = 1;
+}
+
+// 发起 PK - 请求
+message BedSlotPKRequest {
+  uint32 slot_id = 1;   // 参与 PK 的床位 ID
+  uint64 target_id = 2; // 被挑战玩家 ID（床位占有者）
+}
+
+// 发起 PK - 回应
+message BedSlotPKResponse {
+  zeus.game.error.v1.Error error = 1; // 错误码：床位无人、对方保护、PK 冷却中等
+  uint32 slot_id = 2;
+}
+
+// 开始 PK - 通知所有人
+message BedSlotPKStartNotify {
+  uint32 slot_id = 1; // PK 发生的床位
+
+  zeus.game.role.v1.BaseRoleInfo attacker = 2; // 挑战者（发起 PK 的玩家）
+  zeus.game.role.v1.BaseRoleInfo defender = 3; // 被挑战者（当前床位占有者）
+
+  int64 start_time = 4; // PK 开始时间戳（毫秒或秒，可按你系统格式）
+  int64 duration = 5;   // PK 持续时间（用于客户端倒计时）
+}
+
+// PK 结束 - 通知所有人
+message BedSlotPKEndNotify {
+  uint32 slot_id = 1;   // 床位 ID
+  uint64 winner_id = 2; // 胜利方玩家 ID
+  uint64 loser_id = 3;  // 失败方玩家 ID
+
+  zeus.game.role.v1.BaseRoleInfo winner_role = 4; // 胜利方角色完整信息（展示胜利 UI）
+  zeus.game.role.v1.BaseRoleInfo loser_role = 5;  // 失败方角色信息（可作 UI 展示）
+
+  int64 end_time = 6; // 结束时间戳
+}

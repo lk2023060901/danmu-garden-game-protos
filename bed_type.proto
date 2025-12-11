@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package zeus.game.bed.v1;
+
+option go_package = "github.com/lk2023060901/danmu-garden-game-protos;framework";
+
+// 床位灵气状态
+message BedAuraState {
+  int64 aura_max_value = 1; // 灵气上限（随品质变化）
+  int64 aura_cur_value = 2; // 当前灵气值
+  int64 reset_at = 3;       // 下次重置时间（如每日 0 点）
+}
+
+// 床位封印状态
+message BedSealState {
+  bool is_sealed = 1;  // 是否被封印
+  int64 sealed_at = 2; // 封印时间，用于计算融化进度
+  int64 max_value = 3; // 封印进度最大值
+  int64 cur_value = 4; // 当前封印进度值
+}
+
+// 床位信息
+message BedInfo {
+  BedAuraState aura_state = 1; // 灵气状态
+  BedSealState seal_state = 2; // 封印状态
+}
+

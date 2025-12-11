@@ -1,0 +1,32 @@
+syntax = "proto3";
+
+package zeus.game.role.v1;
+
+option go_package = "github.com/lk2023060901/danmu-garden-game-protos;framework";
+
+// 角色外观信息（可扩展结构）
+message CharacterAppearance {
+  uint64 model_id = 1;  // 角色基础模型（男女模型等）
+
+  // 捏脸细节字段（可根据美术需求扩展）
+  uint64 hair_id = 2;       // 发型
+  uint64 eyebrow_id = 3;    // 眉毛
+  uint64 eye_id = 4;        // 眼睛
+  uint64 nose_id = 5;       // 鼻子
+  uint64 mouth_id = 6;      // 嘴
+  uint64 face_shape_id = 7; // 脸型
+  // uint64 beard_id = 8;
+}
+
+// 角色基础展示信息
+message BaseRoleInfo {
+  uint64 avatar_id        = 1; // 角色头像 ID
+  uint64 role_id          = 2; // 角色 ID
+  uint64 cloth_id         = 3; // 衣服 ID
+  uint64 bubble_id        = 4; // 气泡 ID
+  string bubble_text      = 5; // 气泡文本
+  string role_name        = 6; // 角色名称
+  uint64 relation_card_id = 7; // 关系牌 ID
+
+  CharacterAppearance appearance = 8; // 角色外观（模型与捏脸数据）
+}

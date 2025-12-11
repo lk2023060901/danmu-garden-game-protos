@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+package zeus.game.item.v1;
+
+import "item_type.proto";
+
+option go_package = "github.com/lk2023060901/danmu-garden-game-protos;framework";
+
+message ItemExpiredNotify {
+  repeated uint64 expired_item_ids = 1; // 被删除的 item_id 列表
+}
+
+// 获取道具列表 - 请求
+message ItemListRequest {
+
+}
+
+// 获取道具列表 - 回应
+message ItemListResponse {
+  repeated ItemInfo items = 1; // 全部可用服饰
+}

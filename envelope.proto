@@ -2,9 +2,10 @@ syntax = "proto3";
 
 package zeus.framework.internal;
 
-// 生成代码对应的 Go 包路径。
-// 生成的 .pb.go 文件会与本 .proto 文件一起放在 framework 目录下。
-option go_package = "github.com/lk2023060901/danmu-garden-game-protos/framework";
+// 生成代码对应的 Go 包路径（Go import path）。
+// 注意：这里的 import path 指向模块根目录，
+// 使用 ";framework" 指定生成的 Go 包名为 framework。
+option go_package = "github.com/lk2023060901/danmu-garden-game-protos;framework";
 
 // MessageHeader 表示一条在网络中传输的协议消息包。
 //
@@ -44,4 +45,3 @@ enum EnvelopeFlag {
   // ENVELOPE_FLAG_ENCRYPTED 表示 payload 已经过加密（例如 AES‑GCM）。
   ENVELOPE_FLAG_ENCRYPTED = 2;
 }
-

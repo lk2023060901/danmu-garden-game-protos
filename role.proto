@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package zeus.game.role.v1;
+
+import "err_code.proto"; // 导入全局错误码定义
+import "role_type.proto";
+
+option go_package = "github.com/lk2023060901/danmu-garden-game-protos;framework";
+
+// 切换角色（如切换男女） - 请求
+message SwitchRoleRequest {
+  uint64 model_id = 1;  // 要切换到的角色 ID（如男女两个角色）
+}
+
+// 切换角色 - 响应
+message SwitchRoleResponse {
+  zeus.game.error.v1.Error error = 1;
+  BaseRoleInfo role = 2; // 切换后的角色完整信息（含 appearance）
+}
+
+// 切换角色 - 通知其他玩家
+message SwitchRoleNotify {
+  uint64 target_id = 1;   // 操作的玩家 ID
+  BaseRoleInfo role = 2;  // 切换后的角色数据
+}
+
+// 获取角色列表（用于角色选择界面）
+message RoleListRequest {}
+
+// 获取角色列表 - 响应
+message RoleListResponse {
+  repeated BaseRoleInfo roles = 1; // 用户拥有的所有角色
+}

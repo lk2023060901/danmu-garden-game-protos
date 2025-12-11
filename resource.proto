@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package zeus.game.resource.v1;
+
+option go_package = "github.com/lk2023060901/danmu-garden-game-protos;framework";
+
+enum ResourceType {
+  RESOURCE_UNKNOWN = 0;
+  // 装饰能量
+  DECORATION_ENERGY = 1;
+  // 床位的灵气值（Aura Value）
+  AURA_VALUE = 2;
+}
+
+message Resource {
+  ResourceType type = 1;
+  int64 amount = 2;
+}

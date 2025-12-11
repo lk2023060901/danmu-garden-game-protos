@@ -1,0 +1,92 @@
+syntax = "proto3";
+
+package zeus.game.item.v1;
+
+option go_package = "github.com/lk2023060901/danmu-garden-game-protos;framework";
+
+import "resource.proto";
+
+enum ItemCategory {
+  ITEM_CATEGORY_UNKNOWN = 0;
+
+  // 服装 / 外观大类
+  ITEM_CATEGORY_FASHION = 1;
+
+  // 种田系统道具（种子、肥料、催熟等）
+  ITEM_CATEGORY_FARM = 2;
+
+  // 床位系统道具（护盾、封印、踢人等）
+  ITEM_CATEGORY_BED = 3;
+
+  // 消耗品（通用）
+  ITEM_CATEGORY_CONSUMABLE = 4;
+
+  // 特殊道具（礼包、经验卡等）
+  ITEM_CATEGORY_SPECIAL = 5;
+}
+
+enum ItemSubType {
+  ITEM_SUBTYPE_UNKNOWN = 0;
+
+  // -------- 服装类（外观大类） --------
+  ITEM_SUBTYPE_CLOTH = 1;     // 衣服
+  ITEM_SUBTYPE_HAT = 2;       // 帽子
+  ITEM_SUBTYPE_SHOES = 3;     // 鞋子
+  ITEM_SUBTYPE_PANTS = 4;     // 裤子
+  ITEM_SUBTYPE_FACE = 5;      // 脸部（如口罩、表情）
+  ITEM_SUBTYPE_ACCESSORY = 6; // 饰品（项链、耳环等）
+
+  // -------- 种田分类 --------
+  ITEM_SUBTYPE_FARM_FRUIT_SEED = 20; // 水果种子
+
+  // -------- 通用消耗品 --------
+  ITEM_SUBTYPE_CONSUMABLE = 60;
+}
+
+// 道具品质
+enum ItemQuality {
+  ITEM_QUALITY_UNKNOWN = 0;
+  ITEM_QUALITY_SSR     = 1;
+  ITEM_QUALITY_SR      = 2;
+  ITEM_QUALITY_R       = 3;
+  ITEM_QUALITY_N       = 4;
+}
+
+// 道具类型
+enum ItemType {
+  ITEM_TYPE_UNKNOWN = 0;
+  ITEM_TYPE_CLOTH   = 1; // 衣服
+  ITEM_TYPE_AVATAR  = 2; // 头像
+  ITEM_TYPE_BUBBLE  = 3; // 气泡框
+  ITEM_TYPE_OTHER   = 9; // 后续拓展
+}
+
+// 通用 Item 道具结构
+message ItemInfo {
+  uint64 config_id = 1;    // 配表 ID（唯一静态 ID）
+
+  ItemCategory category = 2;  // 大类，例如 FASHION
+  ItemSubType sub_type = 3;   // 小类，例如 HAT
+
+  ItemQuality quality = 4;    // 品质（SSR/SR/R/N）
+
+  // 是否为消耗品（购买后直接使用，不进背包）
+  bool consumable = 5;
+
+  // 售卖价格
+  repeated ItemPrice prices = 6;
+
+  // 使用期限（秒级时间戳），0 = 永久
+  int64 expire_at = 7;
+
+  // 展示相关
+  string name = 8;
+  string icon = 9;
+  string description = 10;
+}
+
+// 道具价格（消耗的资源类型与数量）
+message ItemPrice {
+  zeus.game.resource.v1.ResourceType type = 1; // 资源类型
+  int64 amount = 2;                             // 消耗数量
+}

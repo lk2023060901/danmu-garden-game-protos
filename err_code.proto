@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+// 游戏通用错误码
+package zeus.game.error.v1;
+
+// Go 侧统一都放在同一个包：framework
+option go_package = "github.com/lk2023060901/danmu-garden-game-protos;framework";
+
+// 所有模块共用的错误码定义
+enum ErrorCode {
+  ERROR_CODE_SUCCESS = 0; // 成功
+}
+
+// 统一的错误返回结构
+message Error {
+  ErrorCode code = 1;
+  // 人类可读的错误描述
+  string reason = 2;
+}

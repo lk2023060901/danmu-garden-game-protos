@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package zeus.game.fashion.v1;
+
+import "item_type.proto";
+import "err_code.proto";
+
+option go_package = "github.com/lk2023060901/danmu-garden-game-protos;framework";
+
+// 手动换装 - 请求
+message DressChangeRequest {
+  uint64 item_id = 1; // 要穿戴的道具实例 ID（ItemInfo.item_id）
+}
+
+// 手动换装 - 回复
+message DressChangeResponse {
+  zeus.game.error.v1.Error error = 1;
+  zeus.game.item.v1.ItemInfo item = 2; // 当前穿戴的服饰详细信息（成功时返回）
+}
+
+// 手动换装 - 通知所有人（主画面更新）
+message DressChangeNotify {
+  uint64 role_id = 1; // 改装的角色 ID
+  zeus.game.item.v1.ItemInfo item = 2;
+}
