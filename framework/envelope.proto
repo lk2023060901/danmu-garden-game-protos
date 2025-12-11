@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package zeus.framework.internal;
+
+// 生成代码对应的 Go 包路径。
+// 生成的 .pb.go 文件会与本 .proto 文件一起放在 framework 目录下。
+option go_package = "github.com/lk2023060901/danmu-garden-game-protos/framework";
+
+// MessageHeader 表示一条在网络中传输的协议消息包。
+//
+// 说明：
+//   - op        ：协议 ID，用于路由到具体业务逻辑。
+//   - seq       ：协议序号，用于请求/响应匹配、重放保护等。
+//   - size      ：Envelope.payload 的字节长度，便于快速校验或预分配缓冲区。
+//   - flags     ：使用 EnvelopeFlag 的位标志，描述是否压缩、是否加密等。
+//   - sign      ：签名 / MAC，用于防篡改与身份校验（由上层约定算法）。
+//   - timestamp ：发送时间戳（Unix 时间，单位由上层约定：秒/毫秒/纳秒）。
+message MessageHeader {
+  uint32 op = 1;
+  uint64 seq = 2;
+  uint32 size = 3;
+  uint64 flags = 4;
+  bytes sign = 5;
+  int64 timestamp = 6;
+}
+
+// Envelope 表示一条在网络中传输的协议消息包。
+//
+// 说明：
+//   - payload   ：业务层序列化后的消息体（JSON / Protobuf 等）。
+message Envelope {
+  MessageHeader header = 1;
+  bytes payload = 2;
+}
+
+// EnvelopeFlag 使用枚举来描述各类标志位的含义。
+// 实际存储时，flags 字段为一个 64 位整数，通过按位或进行组合。
+enum EnvelopeFlag {
+  ENVELOPE_FLAG_UNSPECIFIED = 0;
+
+  // ENVELOPE_FLAG_COMPRESSED 表示 payload 已经过压缩（例如 zstd）。
+  ENVELOPE_FLAG_COMPRESSED = 1;
+
+  // ENVELOPE_FLAG_ENCRYPTED 表示 payload 已经过加密（例如 AES‑GCM）。
+  ENVELOPE_FLAG_ENCRYPTED = 2;
+}
+
