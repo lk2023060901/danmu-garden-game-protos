@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package zeus.game.shop.v1;
+
+import "err_code.proto";
+import "shop_type.proto";
+
+option go_package = "github.com/lk2023060901/danmu-garden-game-protos;framework";
+
+// 获取商城商品列表 - 请求
+message GetShopItemListRequest {
+  ShopType shop_type = 1; // 要查询的商店类型
+}
+
+// 获取商城商品列表 - 响应
+message GetShopItemListResponse {
+  ShopItemList list = 1; // 对应商店的道具列表
+}
+
+// 购买商品 - 请求
+message BuyShopItemRequest {
+  uint64 item_id   = 1; // 要购买的商品（配置 ID）
+  uint64 num       = 2; // 购买数量
+  ShopType shop_type = 3; // 购买来源的商店类型
+}
+
+// 购买商品 - 响应
+message BuyShopItemResponse {
+  zeus.game.error.v1.Error error = 1; // 错误信息（库存不足、货币不足等）
+  uint64 item_id   = 2;               // 购买的商品配置 ID
+  uint64 num       = 3;               // 实际购买数量
+  ShopType shop_type = 4;             // 商店类型，用于前端更新对应商店
+}

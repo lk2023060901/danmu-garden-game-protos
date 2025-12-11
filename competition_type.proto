@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package zeus.game.competition.v1;
+
+option go_package = "github.com/lk2023060901/danmu-garden-game-protos;framework";
+
+import "role_type.proto";
+
+// 竞赛阶段
+enum CompetitionPhase {
+  COMPETITION_PHASE_UNKNOWN = 0;
+  COMPETITION_PHASE_SIGNUP  = 1; // 报名阶段
+  COMPETITION_PHASE_VOTE    = 2; // 投票阶段
+  COMPETITION_PHASE_BATTLE  = 3; // 竞赛阶段
+  COMPETITION_PHASE_SETTLE  = 4; // 结算阶段
+}
+
+// 竞赛奖励（道具 + 数量）
+message CompetitionReward {
+  uint32 item_cfg_id = 1; // 奖励道具配置 ID
+  uint32 amount      = 2; // 奖励数量
+}
+
+// 投票选项
+message CompetitionVoteOption {
+  // 选项 ID：对应当前候选奖励列表中的下标（例如 0~5）
+  uint32 option_id  = 1;
+  uint64 vote_count = 2; // 当前累计票数
+}
+
+// 报名 / 助力榜条目（前 10、历史前三等）
+message CompetitionRankEntry {
+  uint32 rank    = 1; // 排名
+  uint64 anchor_id = 2; // 主播 ID
+  uint64 room_id   = 3; // 直播间 ID
+  int64 score      = 4; // 助力得分（例如消耗的装饰能量）
+}
+
+// 当前擂台占领信息
+message CompetitionArenaInfo {
+  uint64 room_id          = 1; // 擂台所属直播间
+  uint64 holder_player_id = 2; // 当前擂台玩家 ID，0 表示无人
+
+  zeus.game.role.v1.BaseRoleInfo holder = 3; // 当前擂主角色信息
+}
+
+// 本轮获胜者信息
+message CompetitionWinnerInfo {
+  uint64 room_id    = 1; // 获胜直播间 ID
+  uint64 anchor_id  = 2; // 获胜主播 ID
+  string anchor_name = 3; // 获胜主播名称
+  uint64 avatar_id  = 4; // 获胜主播头像 ID
+  uint64 vote_count = 5; // 本轮获得的总票数
+}
+
+// 历史获胜者信息（用于历史竞赛获胜者列表）
+message CompetitionWinnerHistoryEntry {
+  uint64 anchor_id   = 1; // 主播 ID
+  string anchor_name = 2; // 主播名称
+  uint64 avatar_id   = 3; // 主播头像 ID
+  uint64 vote_count  = 4; // 当轮获得的票数
+}
+
+// 当前竞赛的整体状态
+message CompetitionState {
+  CompetitionPhase phase = 1; // 当前阶段
+
+  int64 phase_end_time = 2; // 当前阶段结束时间戳（秒）
+
+  CompetitionArenaInfo arena = 3;  // 当前擂台状态
+  CompetitionReward    reward = 4; // 当前竞赛奖励
+}

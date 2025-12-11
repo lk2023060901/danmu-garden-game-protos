@@ -275,14 +275,12 @@ type ItemInfo struct {
 	Quality  ItemQuality            `protobuf:"varint,4,opt,name=quality,proto3,enum=zeus.game.item.v1.ItemQuality" json:"quality,omitempty"`                // 品质（SSR/SR/R/N）
 	// 是否为消耗品（购买后直接使用，不进背包）
 	Consumable bool `protobuf:"varint,5,opt,name=consumable,proto3" json:"consumable,omitempty"`
-	// 售卖价格
-	Prices []*ItemPrice `protobuf:"bytes,6,rep,name=prices,proto3" json:"prices,omitempty"`
 	// 使用期限（秒级时间戳），0 = 永久
-	ExpireAt int64 `protobuf:"varint,7,opt,name=expire_at,json=expireAt,proto3" json:"expire_at,omitempty"`
+	ExpireAt int64 `protobuf:"varint,6,opt,name=expire_at,json=expireAt,proto3" json:"expire_at,omitempty"`
 	// 展示相关
-	Name          string `protobuf:"bytes,8,opt,name=name,proto3" json:"name,omitempty"`
-	Icon          string `protobuf:"bytes,9,opt,name=icon,proto3" json:"icon,omitempty"`
-	Description   string `protobuf:"bytes,10,opt,name=description,proto3" json:"description,omitempty"`
+	Name          string `protobuf:"bytes,7,opt,name=name,proto3" json:"name,omitempty"`
+	Icon          string `protobuf:"bytes,8,opt,name=icon,proto3" json:"icon,omitempty"`
+	Description   string `protobuf:"bytes,9,opt,name=description,proto3" json:"description,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -350,13 +348,6 @@ func (x *ItemInfo) GetConsumable() bool {
 		return x.Consumable
 	}
 	return false
-}
-
-func (x *ItemInfo) GetPrices() []*ItemPrice {
-	if x != nil {
-		return x.Prices
-	}
-	return nil
 }
 
 func (x *ItemInfo) GetExpireAt() int64 {
@@ -444,7 +435,7 @@ var File_item_type_proto protoreflect.FileDescriptor
 
 const file_item_type_proto_rawDesc = "" +
 	"\n" +
-	"\x0fitem_type.proto\x12\x11zeus.game.item.v1\x1a\x0eresource.proto\"\x96\x03\n" +
+	"\x0fitem_type.proto\x12\x11zeus.game.item.v1\x1a\x0eresource.proto\"\xe0\x02\n" +
 	"\bItemInfo\x12\x1b\n" +
 	"\tconfig_id\x18\x01 \x01(\x04R\bconfigId\x12;\n" +
 	"\bcategory\x18\x02 \x01(\x0e2\x1f.zeus.game.item.v1.ItemCategoryR\bcategory\x129\n" +
@@ -452,13 +443,11 @@ const file_item_type_proto_rawDesc = "" +
 	"\aquality\x18\x04 \x01(\x0e2\x1e.zeus.game.item.v1.ItemQualityR\aquality\x12\x1e\n" +
 	"\n" +
 	"consumable\x18\x05 \x01(\bR\n" +
-	"consumable\x124\n" +
-	"\x06prices\x18\x06 \x03(\v2\x1c.zeus.game.item.v1.ItemPriceR\x06prices\x12\x1b\n" +
-	"\texpire_at\x18\a \x01(\x03R\bexpireAt\x12\x12\n" +
-	"\x04name\x18\b \x01(\tR\x04name\x12\x12\n" +
-	"\x04icon\x18\t \x01(\tR\x04icon\x12 \n" +
-	"\vdescription\x18\n" +
-	" \x01(\tR\vdescription\"\\\n" +
+	"consumable\x12\x1b\n" +
+	"\texpire_at\x18\x06 \x01(\x03R\bexpireAt\x12\x12\n" +
+	"\x04name\x18\a \x01(\tR\x04name\x12\x12\n" +
+	"\x04icon\x18\b \x01(\tR\x04icon\x12 \n" +
+	"\vdescription\x18\t \x01(\tR\vdescription\"\\\n" +
 	"\tItemPrice\x127\n" +
 	"\x04type\x18\x01 \x01(\x0e2#.zeus.game.resource.v1.ResourceTypeR\x04type\x12\x16\n" +
 	"\x06amount\x18\x02 \x01(\x03R\x06amount*\xac\x01\n" +
@@ -519,13 +508,12 @@ var file_item_type_proto_depIdxs = []int32{
 	0, // 0: zeus.game.item.v1.ItemInfo.category:type_name -> zeus.game.item.v1.ItemCategory
 	1, // 1: zeus.game.item.v1.ItemInfo.sub_type:type_name -> zeus.game.item.v1.ItemSubType
 	2, // 2: zeus.game.item.v1.ItemInfo.quality:type_name -> zeus.game.item.v1.ItemQuality
-	5, // 3: zeus.game.item.v1.ItemInfo.prices:type_name -> zeus.game.item.v1.ItemPrice
-	6, // 4: zeus.game.item.v1.ItemPrice.type:type_name -> zeus.game.resource.v1.ResourceType
-	5, // [5:5] is the sub-list for method output_type
-	5, // [5:5] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	6, // 3: zeus.game.item.v1.ItemPrice.type:type_name -> zeus.game.resource.v1.ResourceType
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_item_type_proto_init() }

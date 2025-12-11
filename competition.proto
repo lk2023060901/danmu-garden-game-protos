@@ -1,0 +1,110 @@
+syntax = "proto3";
+
+package zeus.game.competition.v1;
+
+option go_package = "github.com/lk2023060901/danmu-garden-game-protos;framework";
+
+import "err_code.proto";
+import "competition_type.proto";
+
+// =============================
+// 报名阶段
+// =============================
+
+// 主播报名参加当前轮次竞赛
+message CompetitionSignupRequest {}
+
+message CompetitionSignupResponse {
+  zeus.game.error.v1.Error error = 1;
+  // 当前主播在全局报名榜中的数据（排名 / 得分等）
+  CompetitionRankEntry entry     = 2;
+}
+
+// 观众为当前直播间主播助力（消耗装饰能量）
+message CompetitionSignupHelpRequest {
+  int64 decoration_energy = 1; // 本次消耗的装饰能量
+}
+
+message CompetitionSignupHelpResponse {
+  zeus.game.error.v1.Error error = 1;
+  int64 total_energy             = 2; // 当前直播间累计助力值
+}
+
+// 任意阶段：同步当前竞赛状态（用户进入直播间时下发）
+message CompetitionStateSyncNotify {
+  CompetitionState state = 1;                  // 当前轮次整体状态
+  repeated CompetitionRankEntry history_top3 = 2; // 历史前三（展示用）
+}
+
+// 全局报名排行榜更新（前 N 名），所有直播间展示同一份数据
+message CompetitionSignupRankNotify {
+  repeated CompetitionRankEntry ranks = 1;
+}
+
+// =============================
+// 投票阶段：选择本轮竞赛奖励
+// =============================
+
+// 单个候选奖励（用于投票展示）
+message CompetitionVoteCandidate {
+  uint32 option_id = 1;         // 选项下标（0~5）
+  CompetitionReward reward = 2; // 对应奖励
+}
+
+// 投票开始/候选列表同步
+message CompetitionVoteStartNotify {
+  int64 vote_end_time = 1; // 投票结束时间戳（秒）
+  repeated CompetitionVoteCandidate candidates = 2; // 候选奖励列表（含固定 + 随机）
+}
+
+// 玩家为某奖励选项投票
+message CompetitionVoteRequest {
+  uint32 option_id = 1; // 对应 CompetitionVoteCandidate.option_id
+  uint32 votes     = 2; // 本次投出的票数（由金币等换算）
+}
+
+message CompetitionVoteResponse {
+  zeus.game.error.v1.Error error = 1;
+  // 本次投票的选项及最新票数
+  CompetitionVoteOption option   = 2;
+}
+
+// 投票进度通知（候选奖励的当前票数）
+message CompetitionVoteProgressNotify {
+  repeated CompetitionVoteOption options = 1; // option_id + vote_count
+}
+
+// =============================
+// 竞赛阶段：抢占擂台
+// =============================
+
+// 抢占擂台（使用当前装饰得分等内部逻辑，无需额外参数）
+message CompetitionCaptureArenaRequest {}
+
+message CompetitionCaptureArenaResponse {
+  zeus.game.error.v1.Error error = 1;
+  CompetitionArenaInfo arena     = 2; // 抢占后的最新擂台状态
+}
+
+// 擂台状态变更通知（有人抢到或被挤下）
+message CompetitionArenaNotify {
+  CompetitionArenaInfo arena = 1;
+}
+
+// =============================
+// 结算阶段
+// =============================
+
+// 本轮结算通知（成功 / 失败界面）
+message CompetitionSettleNotify {
+  bool win        = 1; // 当前直播间是否获胜
+
+  CompetitionReward reward     = 2; // 获得的奖励
+  CompetitionArenaInfo arena   = 3; // 最终擂台状态
+
+  // 本轮获胜直播间信息
+  CompetitionWinnerInfo winner = 4;
+
+  // 历史竞赛获胜者列表（所有直播间共享）
+  repeated CompetitionWinnerHistoryEntry history_winners = 5;
+}

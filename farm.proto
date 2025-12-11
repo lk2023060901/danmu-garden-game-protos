@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package zeus.game.farm.v1;
+
+import "err_code.proto";
+import "farm_type.proto";
+
+option go_package = "github.com/lk2023060901/danmu-garden-game-protos;framework";
+
+// =============================
+// 收购赔率配置相关协议
+// =============================
+
+// 获取水果收购赔率配置 - 请求
+message FruitAcquireInfoListRequest {}
+
+// 获取水果收购赔率配置 - 响应
+message FruitAcquireInfoListResponse {
+  FruitAcquireInfoList list = 1;
+}
+
+// =============================
+// 田地信息相关协议
+// =============================
+
+// 获取玩家田地信息列表 - 请求
+message FarmLandInfoListRequest {}
+
+// 获取玩家田地信息列表 - 响应
+message FarmLandInfoListResponse {
+  FarmLandInfoList land_list = 1;
+}
+
+// 在指定田地种植作物 - 请求
+message PlantFarmLandRequest {
+  uint32 land_id     = 1; // 田地编号
+  uint32 item_cfg_id = 2; // 种子道具配置 id
+  uint32 amount      = 3; // 种植数量
+}
+
+// 在指定田地种植作物 - 响应
+message PlantFarmLandResponse {
+  zeus.game.error.v1.Error error = 1;
+  FarmLandInfo land_info         = 2; // 最新田地状态
+}

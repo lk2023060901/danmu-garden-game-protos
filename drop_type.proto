@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package zeus.game.drop.v1;
+
+option go_package = "github.com/lk2023060901/danmu-garden-game-protos;framework";
+
+// 单个掉落项
+message DropEntry {
+  uint32 item_cfg_id = 1; // 掉落的道具配置 ID
+  float  probability = 2; // 在本掉落列表中的抽中概率（0~1）
+
+  // 掉落数量（可为区间）
+  uint32 min_amount = 3;  // 最小数量
+  uint32 max_amount = 4;  // 最大数量（=min_amount 表示固定数量）
+}
+
+// 掉落列表（奖池）
+message DropList {
+  uint32 drop_list_id = 1;        // 掉落列表 ID（配置用）
+  uint32 weight       = 2;        // 该列表在多个列表之间被选中的权重
+  repeated DropEntry entries = 3; // 本列表中的所有掉落项
+}
+

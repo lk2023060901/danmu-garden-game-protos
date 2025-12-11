@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package zeus.game.vip.v1;
+
+option go_package = "github.com/lk2023060901/danmu-garden-game-protos;framework";
+
+// 玩家当前 VIP 信息
+message VipInfo {
+  uint64 curr_exp = 1;           // 当前累计成长值（由钻石消费折算）
+
+  int64 today_energy_earned = 2; // 今日已获得的装饰能量
+
+  // 当月装饰能量清零时间（例如每月最后一天 24 点）
+  int64 month_reset_time = 3;    // 时间戳（秒）
+}

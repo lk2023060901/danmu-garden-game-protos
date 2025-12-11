@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package zeus.game.shop.v1;
+
+option go_package = "github.com/lk2023060901/danmu-garden-game-protos;framework";
+
+import "item_type.proto";
+
+// 商店类型
+enum ShopType {
+  SHOP_TYPE_UNKNOWN          = 0; // 未指定
+
+  // 全局兑换商店：面向所有玩家，共享配置与库存
+  SHOP_TYPE_GLOBAL_EXCHANGE  = 1;
+
+  // 个人兑换商店：每个玩家独立的兑换商店（个人库存 / 进度）
+  SHOP_TYPE_PERSONAL_EXCHANGE = 2;
+}
+
+// 商城商品结构
+message ShopItem {
+  zeus.game.item.v1.ItemInfo info = 1;   // 道具基本信息（含大类/子类/价格等）
+
+  // 最大可兑换数量（0 表示无兑换限制）
+  uint64 max_exchange_num = 2;
+
+  // 兑换价格（可覆盖 ItemInfo.prices 的默认配置）
+  repeated zeus.game.item.v1.ItemPrice prices = 3;
+}
+
+// 商城道具列表
+message ShopItemList {
+  ShopType shop_type = 1;      // 商店类型
+  repeated ShopItem items = 2; // 当前商店内的全部商品配置
+}

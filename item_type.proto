@@ -73,16 +73,13 @@ message ItemInfo {
   // 是否为消耗品（购买后直接使用，不进背包）
   bool consumable = 5;
 
-  // 售卖价格
-  repeated ItemPrice prices = 6;
-
   // 使用期限（秒级时间戳），0 = 永久
-  int64 expire_at = 7;
+  int64 expire_at = 6;
 
   // 展示相关
-  string name = 8;
-  string icon = 9;
-  string description = 10;
+  string name = 7;
+  string icon = 8;
+  string description = 9;
 }
 
 // 道具价格（消耗的资源类型与数量）

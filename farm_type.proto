@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package zeus.game.farm.v1;
+
+option go_package = "github.com/lk2023060901/danmu-garden-game-protos;framework";
+
+// =============================
+// 基础结构体
+// =============================
+
+// 每轮水果收购赔率 & 概率信息
+message FruitAcquireInfo {
+  uint32 item_cfg_id = 1; // 道具配置 id（水果种子 ItemConfig ID）
+  float weight = 2;       // 权重
+  float probability = 3;  // 收购概率
+  float odds = 4;         // 收购赔率
+}
+
+// 每轮水果收购赔率 & 概率信息列表
+message FruitAcquireInfoList {
+  repeated FruitAcquireInfo acquire_info_list = 1;
+}
+
+// 玩家一块田地信息
+message FarmLandInfo {
+  uint32 land_id    = 1; // 第几块田（1~N）
+  uint32 item_cfg_id = 2; // 当前种植的道具配置 id（0 表示空地）
+  uint32 amount     = 3; // 种植数量
+}
+
+// 玩家田地列表
+message FarmLandInfoList {
+  repeated FarmLandInfo land_list = 1;
+}
+
